@@ -13,17 +13,54 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entities.Course;
+import com.example.demo.services.CourseService;
+
+
 
 
 @RestController
 public class MyController {
-	
+	@Autowired
+	private CourseService courseservice;
 	@GetMapping("/")
 	String hello() {
 		return "Hello World";
 	}
-
 	
+	@GetMapping("/home")
+	public String home(){
+		
+		return "Welcome";
+	}
+	@GetMapping("/courses") 
+	public List<Course> getCourses(){
+		return this.courseservice.getCourses();
+		
+	}
+	@GetMapping("/courses/{id}") 
+	public Course getCourse(@PathVariable String id){
+		return this.courseservice.getCourse(Long.parseLong(id));
+		
+	}
+	@PostMapping("/courses")
+	public Course addCourse(@RequestBody Course course) {
+		return this.courseservice.addCourse(course);
+	}
+	@PutMapping("/courses")
+	public Course updateCourse(@RequestBody Course course) {
+		return this.courseservice.updateCourse(course);
+	}
+	@DeleteMapping("/courses/{courseId}")
+	public ResponseEntity<HttpStatus> deleteCourse(@PathVariable String courseId){
+		try {
+			this.courseservice.deleteCourse(Long.parseLong(courseId));
+			return new ResponseEntity<>(HttpStatus.OK);
+		}catch(Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
 		
 	}
 
